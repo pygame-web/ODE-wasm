@@ -372,7 +372,7 @@ if(ODE_WITH_LIBCCD)
 			libccd/src/custom/ccdcustom/vec3.h
 		)
 	endif()
-	
+
 	list(
 		APPEND SRCS
 		ode/src/collision_libccd.cpp
@@ -526,7 +526,7 @@ if(WIN32)
 			RELWITHDEBINFO_POSTFIX s
 		)
 	endif()
-	
+
 	if(ODE_DOUBLE_PRECISION)
 		set_target_properties(ODE PROPERTIES OUTPUT_NAME ode_double)
 	else()
@@ -622,35 +622,35 @@ if(ODE_WITH_LIBCCD)
 			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libccd/src/custom>
 		)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_BOX_CYL)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_BOX_CYL)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CAP_CYL)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CAP_CYL)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CYL_CYL)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CYL_CYL)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CONVEX_BOX)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CONVEX_BOX)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CONVEX_CAP)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CONVEX_CAP)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CONVEX_CONVEX)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CONVEX_CONVEX)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CONVEX_CYL)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CONVEX_CYL)
 	endif()
-	
+
 	if(ODE_WITH_LIBCCD_CONVEX_SPHERE)
 		target_compile_definitions(ODE PRIVATE -DdLIBCCD_CONVEX_SPHERE)
 	endif()
@@ -658,11 +658,11 @@ endif()
 
 if(ODE_WITH_OPCODE AND NOT ODE_NO_TRIMESH)
 	target_compile_definitions(ODE PRIVATE -DdTRIMESH_ENABLED -DdTRIMESH_OPCODE)
-	
+
 	if(ODE_OLD_TRIMESH)
 		target_compile_definitions(ODE PRIVATE -DdTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER)
 	endif()
-	
+
 	target_include_directories(
 		ODE
 		PRIVATE
@@ -735,7 +735,7 @@ if(ODE_WITH_DEMOS)
 		drawstuff/src/drawstuff.cpp
 		drawstuff/src/internal.h
 	)
-	
+
 	if(WIN32)
 		set(DRAWSTUFF_RSRC drawstuff/src/resources.rc)
 		list(
@@ -746,24 +746,26 @@ if(ODE_WITH_DEMOS)
 		)
 	elseif(APPLE)
 		list(APPEND DRAWSTUFF_SRCS drawstuff/src/osx.cpp)
+    elseif(EMSCRIPTEN)
+    elseif(WASI)
 	else()
 		list(APPEND DRAWSTUFF_SRCS drawstuff/src/x11.cpp)
 	endif()
-	
+
 	add_library(drawstuff ${DRAWSTUFF_SRCS})
 	target_compile_definitions(drawstuff PUBLIC -DDRAWSTUFF_TEXTURE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/drawstuff/textures")
-	
+
 	if(BUILD_SHARED_LIBS)
 		target_compile_definitions(drawstuff PRIVATE -DDS_DLL -DUSRDLL)
 	else()
 		target_compile_definitions(drawstuff PRIVATE -DDS_LIB)
 	endif()
-	
+
 	target_link_libraries(drawstuff PUBLIC ODE)
-	
+
 	target_include_directories(drawstuff PRIVATE ${OPENGL_INCLUDE_DIRS})
 	target_link_libraries(drawstuff PRIVATE ${OPENGL_LIBRARIES})
-	
+
 	if(WIN32)
 		target_link_libraries(drawstuff PRIVATE winmm)
 	elseif(APPLE)
@@ -775,7 +777,7 @@ if(ODE_WITH_DEMOS)
 		target_include_directories(drawstuff PRIVATE ${X11_INCLUDE_DIR})
 		target_link_libraries(drawstuff PRIVATE ${X11_LIBRARIES})
 	endif()
-	
+
 	set(
 		ALL_DEMO_SRCS
 		ode/demo/demo_boxstack.cpp
@@ -812,7 +814,7 @@ if(ODE_WITH_DEMOS)
 		ode/demo/demo_step.cpp
 		ode/demo/demo_transmission.cpp
 	)
-	
+
 	if(NOT ODE_NO_TRIMESH)
 		list(
 			APPEND ALL_DEMO_SRCS
@@ -824,7 +826,7 @@ if(ODE_WITH_DEMOS)
 			ode/demo/demo_trimesh.cpp
 		)
 	endif()
-	
+
 	foreach(MAIN_DEMO_SRC ${ALL_DEMO_SRCS})
 		get_filename_component(DEMO ${MAIN_DEMO_SRC} NAME_WE)
 		set(
@@ -837,7 +839,7 @@ if(ODE_WITH_DEMOS)
 		else()
 			if(NOT BUILD_SHARED_LIBS)
 				list(
-					APPEND DEMO_SRC 
+					APPEND DEMO_SRC
 					${DRAWSTUFF_RSRC}
 				)
 			endif()
@@ -848,7 +850,7 @@ if(ODE_WITH_DEMOS)
 			endif()
 		endif()
 		target_link_libraries(${DEMO} drawstuff)
-		
+
 		if(NOT WIN32 AND ${DEMO} STREQUAL "demo_chain1")
 			target_link_libraries(${DEMO} m)
 		endif()
@@ -912,7 +914,7 @@ if(ODE_WITH_TESTS)
 		tests/UnitTest++/src/XmlTestReporter.cpp
 		tests/UnitTest++/src/XmlTestReporter.h
 	)
-	
+
 	if(WIN32)
 		list(
 			APPEND TEST_SRCS
@@ -928,11 +930,11 @@ if(ODE_WITH_TESTS)
 			tests/UnitTest++/src/Posix/TimeHelpers.h
 		)
 	endif()
-	
+
 	add_executable(tests ${TEST_SRCS})
 	target_include_directories(tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests/UnitTest++/src)
 	target_link_libraries(tests ODE)
-	
+
 	enable_testing()
 	add_test(tests ${CMAKE_CURRENT_BINARY_DIR}/tests)
 endif()
